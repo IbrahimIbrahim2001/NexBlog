@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/header";
+import { Suspense } from "react";
 
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -37,7 +38,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
+          <Suspense fallback={<>loading...</>}>
+            <Header />
+          </Suspense>
           <main className="h-[calc(100vh-64px)] w-full max-w-7xl mx-auto pt-14 px-4 flex  justify-center">
             {children}
           </main>

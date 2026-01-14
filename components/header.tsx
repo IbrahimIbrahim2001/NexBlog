@@ -2,11 +2,13 @@
 import { MobileNav } from "@/components/mobile-nav";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useScroll } from "@/hooks/use-scroll";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeToggler } from "./theme-toggler";
-import { Activity } from "react";
-import { Badge } from "./ui/badge";
+import { Skeleton } from "./ui/skeleton";
+import { UserAvatar } from "./user-avatar";
 
 export const navLinks = [
 	{
@@ -19,13 +21,14 @@ export const navLinks = [
 	},
 	{
 		label: "Create Blog",
-		href: "#",
+		href: "/blogs/create-blog",
 	}
 ];
-
 export function Header() {
 	const scrolled = useScroll(10);
-	const isAuth = false;
+	const { data: session, isPending } = useSession();
+	const isAuthed = Boolean(session?.user);
+	const pathname = usePathname();
 	return (
 		<header
 			className={cn("fixed top-0 z-50 w-full border-transparent border-b", {
@@ -44,29 +47,31 @@ export function Header() {
 				</div>
 				<div className="hidden items-center gap-1 md:flex">
 					<ThemeToggler />
-					{navLinks.map((link, i) => (
-						<Link
-							className={buttonVariants({ variant: "ghost" })}
-							href={{ pathname: link.href }}
-							key={i}
-						>
-							{link.label}
+					{navLinks.map((link, i) => {
+						const isActive = Boolean(pathname === link.href);
+						return (
+							<Link
+								className={cn(buttonVariants({ variant: "ghost" }), isActive && "bg-accent")}
+								href={{ pathname: link.href }}
+								key={i}
+							>
+								{link.label}
+							</Link>
+						)
+					})}
+
+					{isAuthed ? (
+						<UserAvatar user={session?.user} />
+					) : isPending ? (
+						<Skeleton className="size-8 rounded-full" />
+					) : (
+						<Link href="/login">
+							<Button variant="outline">Sign In</Button>
 						</Link>
-					))}
-					<Activity mode={isAuth ? "visible" : "hidden"}>
-						<Badge>authed</Badge>
-					</Activity>
-					<Activity mode={isAuth ? "hidden" : "visible"}>
-						<Button variant="outline">
-							<Link href="/login" >Sign In</Link>
-						</Button>
-						<Button>
-							<Link href="/signup" >Get Started</Link>
-						</Button>
-					</Activity>
+					)}
 				</div>
 				<MobileNav />
 			</nav>
-		</header>
+		</header >
 	);
 }
