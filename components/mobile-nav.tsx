@@ -1,19 +1,40 @@
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from '@hugeicons/react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { Activity } from "react";
 import { createPortal } from "react-dom";
-import { navLinks } from "@/components/header";
-import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
 import { ModeToggle } from "./mode-toggle";
-import Link from "next/link";
+
+export const navLinks = [
+	{
+		label: "Home",
+		href: "/",
+	},
+	{
+		label: "Blogs",
+		href: "/blogs",
+	},
+	{
+		label: "Create Blog",
+		href: "/blogs/create-blog",
+	},
+	{
+		label: "Profile",
+		href: "/profile",
+	}
+];
 
 export function MobileNav() {
 	const [open, setOpen] = React.useState(false);
 	const { isMobile } = useMediaQuery();
-	const isAuth = false;
-
+	const { data: session } = useSession();
+	const isAuthed = Boolean(session?.user);
+	const pathname = usePathname();
 	// 🚫 Disable body scroll when open
 	React.useEffect(() => {
 		if (open && isMobile) {
@@ -71,40 +92,31 @@ export function MobileNav() {
 							data-slot={open ? "open" : "closed"}
 						>
 							<div className="grid gap-y-2">
-								{navLinks.map((link) => (
-									<Link
-										className={buttonVariants({
-											variant: "ghost",
-											className: "justify-start",
-										})}
-										href={{ pathname: link.href }}
-										key={link.label}
-									>
-										{link.label}
-									</Link>
-								))}
-								<Activity mode={isAuth ? "visible" : "hidden"}>
-									<Link
-										className={buttonVariants({
-											variant: "ghost",
-											className: "justify-start",
-										})}
-										href="/"
-									>
-										profile
-									</Link>
-								</Activity>
+								{navLinks.map((link) => {
+									const isActive = Boolean(pathname === link.href);
+									if (link.href === "/profile" && !isAuthed) {
+										return null;
+									}
+									return (
+										<Link
+											className={cn(buttonVariants({
+												variant: "ghost",
+												className: "justify-start",
+											}), isActive && "text-primary")}
+											onClick={() => setOpen(false)}
+											href={{ pathname: link.href }}
+											key={link.label}
+										>
+											{link.label}
+										</Link>
+									);
+								})}
 							</div>
-							<Activity mode={isAuth ? "hidden" : "visible"}>
+							<Activity mode={isAuthed ? "hidden" : "visible"}>
 								<div className="mt-12 flex flex-col gap-2">
 									<Link href="/login" >
 										<Button className="w-full" variant="outline" onClick={() => setOpen(false)}>
 											Sign In
-										</Button>
-									</Link>
-									<Link href="/signup">
-										<Button className="w-full" onClick={() => setOpen(false)}>
-											Get Started
 										</Button>
 									</Link>
 								</div>

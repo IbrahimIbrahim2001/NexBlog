@@ -47,7 +47,7 @@ export function CTASection() {
                 </p>
                 <div className="flex items-center justify-center">
                     <Button size="lg">
-                        <Link href="/signup" className="flex items-center gap-2">
+                        <Link href="/login" className="flex items-center gap-2">
                             Join Free
                             <HugeiconsIcon
                                 icon={ArrowRight02Icon}
