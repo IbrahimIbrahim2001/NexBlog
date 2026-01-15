@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, uuid } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
     id: text("id").primaryKey(),
@@ -73,9 +73,27 @@ export const verification = pgTable(
     (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const blog = pgTable("blog", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+}, (table) => [
+    index("blog_userId_idx").on(table.userId),
+]
+);
+
+export type Blog = typeof blog.$inferSelect;
+
 export const userRelations = relations(user, ({ many }) => ({
     sessions: many(session),
     accounts: many(account),
+    blog: many(blog),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -93,4 +111,11 @@ export const accountRelations = relations(account, ({ one }) => ({
 }));
 
 
-export const schema = { user, session, account, verification };
+export const blogRelations = relations(blog, ({ one }) => ({
+    user: one(user, {
+        fields: [blog.userId],
+        references: [user.id],
+    })
+}))
+
+export const schema = { user, session, account, verification, blog };
