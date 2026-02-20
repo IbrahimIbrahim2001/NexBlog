@@ -1,9 +1,39 @@
-import { blogs } from "@/app/(root)/blogs/page";
 import { Button } from "@/components/ui/button";
+import { Blog } from "@/db/schema";
 import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import BlogCard from "./blog-card";
+export const blogs: Blog[] = [
+    {
+        id: "1",
+        userId: "user1",
+        title: "First Blog Post",
+        content: "This is the content of the first blog post.",
+        image_url: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
+    {
+        id: "2",
+        userId: "user2",
+        title: "Second Blog Post",
+        content: "This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.This is the content of the second blog post.",
+        image_url: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
+    {
+        id: "3",
+        userId: "user3",
+        title: "Third Blog Post",
+        content: "This is the content of the third blog post.",
+        image_url: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }
+]
+
 /* 
     - update card image, and card component
     - fetch only three newest blogs

@@ -1,13 +1,11 @@
+import { blogs } from "@/components/blogs-sections";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { blogs } from "../page";
 export default async function BlogPage({ params }: { params: Promise<{ blog_id: string }> }) {
-    // await connection();
     const { blog_id } = await params;
-    console.log(blog_id)
     const blog = blogs[blog_id as unknown as number - 1];
     return (
         <div className="mx-auto w-full max-w-7xl p-4 pt-2 sm:p-6 lg:p-1 flex flex-col gap-6">
